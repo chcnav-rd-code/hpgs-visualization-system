@@ -1,26 +1,3 @@
-import {
-	WireframeGeometry
-} from '../build/three.module.js';
-import { LineSegmentsGeometry } from '../lines/LineSegmentsGeometry.js';
-
-var WireframeGeometry2 = function ( geometry ) {
-
-	LineSegmentsGeometry.call( this );
-
-	this.type = 'WireframeGeometry2';
-
-	this.fromWireframeGeometry( new WireframeGeometry( geometry ) );
-
-	// set colors, maybe
-
-};
-
-WireframeGeometry2.prototype = Object.assign( Object.create( LineSegmentsGeometry.prototype ), {
-
-	constructor: WireframeGeometry2,
-
-	isWireframeGeometry2: true
-
-} );
-
-export { WireframeGeometry2 };
+version https://git-lfs.github.com/spec/v1
+oid sha256:e98e961d8a1f53c07f711130220f23d6a31c8cbed03711ab4caee4d55e10435e
+size 553

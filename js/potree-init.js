@@ -1,20 +1,3 @@
-function initPotree(domId, callback) {
-  if (!domId) {
-    return;
-  }
-  window.potreeViewer = new Potree.Viewer(document.getElementById(domId), {
-    useDefaultRenderLoop: false,
-  });
-  potreeViewer.setEDLEnabled(true);
-  potreeViewer.setFOV(60);
-  potreeViewer.setPointBudget(3_000_000);
-  potreeViewer.setMinNodeSize(30);
-  potreeViewer.loadSettingsFromURL();
-  potreeViewer.setBackground(null);
-  potreeViewer.useEDL = false;
-  potreeViewer.compass.setVisible(true);
-
-  potreeViewer.setControls(potreeViewer.earthControls);
-
-  callback(potreeViewer);
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:01f07abec928c9b753270403350c05188fc517984a00893cd35da109b84c36f7
+size 558

@@ -1,31 +1,3 @@
-/**
- * @author WestLangley / http://github.com/WestLangley
- *
- */
-
-THREE.Line2 = function ( geometry, material ) {
-
-	THREE.LineSegments2.call( this );
-
-	this.type = 'Line2';
-
-	this.geometry = geometry !== undefined ? geometry : new THREE.LineGeometry();
-	this.material = material !== undefined ? material : new THREE.LineMaterial( { color: Math.random() * 0xffffff } );
-
-};
-
-THREE.Line2.prototype = Object.assign( Object.create( THREE.LineSegments2.prototype ), {
-
-	constructor: THREE.Line2,
-
-	isLine2: true,
-
-	copy: function ( /* source */ ) {
-
-		// todo
-
-		return this;
-
-	}
-
-} );
+version https://git-lfs.github.com/spec/v1
+oid sha256:471f7ca5fcb029997fd6205b12ae6d28345cff5a92a5607e620a70970606927a
+size 582

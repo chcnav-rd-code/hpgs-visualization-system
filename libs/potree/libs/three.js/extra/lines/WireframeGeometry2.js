@@ -1,32 +1,3 @@
-/**
- * @author WestLangley / http://github.com/WestLangley
- *
- */
-
-THREE.WireframeGeometry2 = function ( geometry ) {
-
-	THREE.LineSegmentsGeometry.call( this );
-
-	this.type = 'WireframeGeometry2';
-
-	this.fromWireframeGeometry( new THREE.WireframeGeometry( geometry ) );
-
-	// set colors, maybe
-
-};
-
-THREE.WireframeGeometry2.prototype = Object.assign( Object.create( THREE.LineSegmentsGeometry.prototype ), {
-
-	constructor: THREE.WireframeGeometry2,
-
-	isWireframeGeometry2: true,
-
-	copy: function ( /* source */ ) {
-
-		// todo
-
-		return this;
-
-	}
-
-} );
+version https://git-lfs.github.com/spec/v1
+oid sha256:1acaf2895cf0b41807fef804a9554bcf344255de5625e66c68ddc88c90037c9c
+size 551
