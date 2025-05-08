@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+    />
+    <title>Cesium Build Test</title>
+    <!-- 引入构建后的 Cesium CSS 文件 -->
+    <link href="./libs/cesium/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+    <!-- 引入构建后的 Cesium JavaScript 文件 -->
+    <script src="./libs/cesium/Build/Cesium/Cesium.js"></script>
+    <!-- 引入cesium初始化 -->
+    <script src="./js/cesium-init.js"></script>
+    <!-- 引入3dtiles加载 -->
+    <script src="./js/cesium-load-3dtiles.js"></script>
+    <!-- 引入漫游控制器 -->
+    <script src="./js/cesium-roaming.js"></script>
+    <!-- 引入量测工具 -->
+    <script src="./js/cesium-measurement.js"></script>
+    <link rel="stylesheet" href="./css/index.css" />
+  </head>
+
+  <body class="full-width">
+    <div id="cesiumContainer" class="full-width"></div>
+
+    <!-- 量测工具栏 -->
+    <div class="measurement-toolbar">
+      <button id="pointMeasureBtn">点位量测</button>
+      <button id="distanceMeasureBtn">距离量测</button>
+      <button id="areaMeasureBtn">面积量测</button>
+      <button id="clearMeasureBtn" class="clear">清除量测</button>
+      <div class="measurement-option">
+        <input type="checkbox" id="continuousMeasureToggle" />
+        <label for="continuousMeasureToggle">连续测量</label>
+      </div>
+    </div>
+
+    <!-- 状态提示栏 -->
+    <div id="statusBar" class="status-bar"></div>
+
+    <script>
+      initCesium("cesiumContainer", function (viewer) {
+        // 初始化量测工具
+        initMeasurementTools(viewer);
+
+        // 加载3dtiles
+        load3Dtiles({
+          viewer: viewer,
+          url: "./data/ljyh-hpgs/tileset.json",
+          callback: function (tileset) {
+            // 初始化漫游控制器
+            var roamingController = new CesiumRoaming(viewer, {
+              moveSpeed: 0.05, // 降低基础移动速度
+              rotateSpeed: Cesium.Math.toRadians(0.5), // 降低旋转速度
+              acceleration: 0.1, // 降低加速度
+              deceleration: 0.3, // 设置减速度
+              maxSpeed: 0.5, // 限制最大速度
+            });
+
+            // 将漫游控制器保存到全局变量，以便后续操作
+            window.roamingController = roamingController;
+          },
+          isFlyTo: true,
+        });
+      });
+
+      // 初始化量测工具
+      function initMeasurementTools(viewer) {
+        // 创建量测工具实例
+        const measurementTool = new CesiumMeasurement(viewer, {
+          // 可以自定义样式选项
+          pointOptions: {
+            pixelSize: 12,
+            color: Cesium.Color.RED,
+            outlineColor: Cesium.Color.WHITE,
+            outlineWidth: 2,
+          },
+          lineOptions: {
+            width: 4,
+            material: new Cesium.ColorMaterialProperty(Cesium.Color.YELLOW),
+          },
+          areaOptions: {
+            material: new Cesium.ColorMaterialProperty(
+              Cesium.Color.GREEN.withAlpha(0.3)
+            ),
+            outlineColor: Cesium.Color.GREEN,
+          },
+          // 默认不启用连续测量
+          continuousMeasurement: false,
+        });
+
+        // 保存到全局变量
+        window.measurementTool = measurementTool;
+
+        // 获取DOM元素
+        const pointMeasureBtn = document.getElementById("pointMeasureBtn");
+        const distanceMeasureBtn =
+          document.getElementById("distanceMeasureBtn");
+        const areaMeasureBtn = document.getElementById("areaMeasureBtn");
+        const clearMeasureBtn = document.getElementById("clearMeasureBtn");
+        const statusBar = document.getElementById("statusBar");
+        const continuousMeasureToggle = document.getElementById(
+          "continuousMeasureToggle"
+        );
+
+        // 当前活动按钮
+        let activeButton = null;
+
+        // 显示状态信息
+        function showStatus(message) {
+          statusBar.textContent = message;
+          statusBar.style.display = "block";
+
+          // 3秒后自动隐藏（除非是操作提示）
+          if (!message.includes("点击")) {
+            setTimeout(() => {
+              statusBar.style.display = "none";
+            }, 3000);
+          }
+        }
+
+        // 设置按钮活动状态
+        function setActiveButton(button) {
+          // 清除所有按钮的活动状态
+          pointMeasureBtn.classList.remove("active");
+          distanceMeasureBtn.classList.remove("active");
+          areaMeasureBtn.classList.remove("active");
+
+          // 设置当前按钮为活动状态
+          if (button) {
+            button.classList.add("active");
+            activeButton = button;
+          } else {
+            activeButton = null;
+          }
+        }
+
+        // 点位量测按钮点击事件
+        pointMeasureBtn.addEventListener("click", () => {
+          if (activeButton === pointMeasureBtn) {
+            // 已经激活，则停止量测
+            measurementTool.stopMeasurement();
+            setActiveButton(null);
+            statusBar.style.display = "none";
+          } else {
+            // 开始点位量测
+            const message = measurementTool.startPointMeasurement();
+            setActiveButton(pointMeasureBtn);
+            showStatus(message);
+          }
+        });
+
+        // 距离量测按钮点击事件
+        distanceMeasureBtn.addEventListener("click", () => {
+          if (activeButton === distanceMeasureBtn) {
+            // 已经激活，则停止量测
+            measurementTool.stopMeasurement();
+            setActiveButton(null);
+            statusBar.style.display = "none";
+          } else {
+            // 开始距离量测
+            const message = measurementTool.startLineMeasurement();
+            setActiveButton(distanceMeasureBtn);
+            showStatus(message);
+          }
+        });
+
+        // 面积量测按钮点击事件
+        areaMeasureBtn.addEventListener("click", () => {
+          if (activeButton === areaMeasureBtn) {
+            // 已经激活，则停止量测
+            measurementTool.stopMeasurement();
+            setActiveButton(null);
+            statusBar.style.display = "none";
+          } else {
+            // 开始面积量测
+            const message = measurementTool.startAreaMeasurement();
+            setActiveButton(areaMeasureBtn);
+            showStatus(message);
+          }
+        });
+
+        // 清除量测按钮点击事件
+        clearMeasureBtn.addEventListener("click", () => {
+          measurementTool.clearAll();
+          setActiveButton(null);
+          statusBar.style.display = "none";
+          showStatus("已清除所有量测");
+        });
+
+        // 连续测量切换事件
+        continuousMeasureToggle.addEventListener("change", (e) => {
+          measurementTool.setContinuousMeasurement(e.target.checked);
+          showStatus(`连续测量: ${e.target.checked ? "开启" : "关闭"}`);
+        });
+
+        // 测量完成回调
+        measurementTool.setMeasureCompleteCallback((result) => {
+          console.log(`测量完成，类型: ${result.type}`);
+          // 如果不是连续测量，取消按钮激活状态
+          if (!measurementTool.isContinuousMeasurement()) {
+            setActiveButton(null);
+          }
+        });
+
+        // 键盘Esc键取消当前量测
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && activeButton) {
+            measurementTool.stopMeasurement();
+            setActiveButton(null);
+            statusBar.style.display = "none";
+            showStatus("已取消量测");
+          }
+        });
+      }
+
+    </script>
+  </body>
+</html>

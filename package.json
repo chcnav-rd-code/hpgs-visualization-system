@@ -1,0 +1,9 @@
+{
+    "name": "hpgs-visualization-system",
+    "version": "1.0.0",
+    "description": "HPGS 可视化系统",
+    "main": "index.html",
+    "scripts": {
+        "start": "node server.js"
+    }
+}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>Potree Viewer</title>
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="./libs/potree/build/potree/potree.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="./libs/potree/libs/jquery-ui/jquery-ui.min.css"
+    />
+    <!-- 引入构建后的 Cesium CSS 文件 -->
+    <link href="./libs/cesium/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/hpgs_las.css" />
+    
+  </head>
+
+  <body>
+    <script src="./libs/potree/libs/jquery/jquery-3.1.1.min.js"></script>
+    <script src="./libs/potree/libs/jquery-ui/jquery-ui.min.js"></script>
+    <script src="./libs/potree/libs/other/BinaryHeap.js"></script>
+    <script src="./libs/potree/libs/tween/tween.min.js"></script>
+    <script src="./libs/potree/libs/proj4/proj4.js"></script>
+    <script src="./libs/potree/build/potree/potree.js"></script>
+    <script src="./libs/potree/libs/plasio/js/laslaz.js"></script>
+    <script src="./libs/potree/libs/three.js/build/three.min.js"></script>
+    <script src="./libs/cesium/Build/Cesium/Cesium.js"></script>
+
+    <!-- 引入potree的js文件 -->
+    <script src="./js/potree-init.js"></script>
+    <script src="./js/potree-load-las.js"></script>
+    <script src="./js/load-transform-matrix.js"></script>
+    <script src="./js/potree-roaming.js"></script>
+    <script src="./js/potree-measurement.js"></script>
+
+    <!-- 引入构建后的 Cesium JavaScript 文件 -->
+    <script src="./js/cesium-init.js"></script>
+    <script src="./js/cesium-load-3dtiles.js"></script>
+    <script src="./js/cesium-roaming.js"></script>
+
+    <div
+      class="potree_container"
+      style="position: absolute; width: 100%; height: 100%; left: 0px; top: 0px"
+    >
+      <div id="potree_render_area">
+        <div
+          id="cesiumContainer"
+          style="
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgb(91, 98, 91);
+          "
+        ></div>
+      </div>
+      <div id="potree_sidebar_container"></div>
+
+      <!-- 工具面板 -->
+      <div class="tools-panel">
+        <h3>Potree 工具</h3>
+
+        <div class="section">
+          <div>漫游控制</div>
+          <button id="potree-roaming-btn">开始漫游</button>
+          <div class="key-controls">W/S/A/D: 移动 | Q/E: 上下</div>
+        </div>
+
+        <div class="section">
+          <div>量测工具</div>
+          <button id="btn-measure-point">点位置</button>
+          <button id="btn-measure-distance">距离</button>
+          <button id="btn-measure-area">面积</button>
+          <button id="btn-measure-clear">清除</button>
+          <button id="btn-measure-stop">停止</button>
+          <div style="display: none;">
+            <input type="checkbox" id="chk-continuous-measure" />
+            <label for="chk-continuous-measure">连续测量</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      // 全局变量
+      let potreeRoaming = null;
+      let potreeMeasurement = null;
+      let potreeRoamingControl = null;
+
+      /*********  引擎一 cesium  *********/
+
+      initCesium("cesiumContainer", function (viewer) {
+        window.cesiumViewer = viewer;
+
+        load3Dtiles({
+          viewer: viewer,
+          url: "./data/ljyh-hpgs/tileset.json",
+          callback: function (tileset) {
+            console.log(tileset);
+          },
+          isFlyTo: false,
+        });
+      });
+
+      /*********  引擎二 potree  *********/
+
+      initPotree("potree_render_area", function (potreeViewer) {
+        window.potreeViewer = potreeViewer;
+
+        loadLas({
+          potreeViewer: potreeViewer,
+          lasUrl: "./data/ljyh-las/metadata.json",
+          callback: function (pointcloud) {
+            // 由于Cesium已被禁用，不再需要加载transform_matrix
+            let tilesetUrl = "./data/ljyh-hpgs";
+            loadTransformMatrix(tilesetUrl);
+
+            // 初始化量测工具
+            initMeasurementControls();
+          },
+          isFlyTo: true,
+        });
+      });
+
+      $(document).ready(function () {
+        $("#potree-roaming-btn").click(function () {
+          if (this.classList.contains("active")) {
+            endflyRoamOnPotree();
+            this.classList.remove("active");
+            this.innerHTML = "开始漫游";
+          } else {
+            startflyRoamOnPotree();
+            this.classList.add("active");
+            this.innerHTML = "停止漫游";
+          }
+        });
+      });
+
+      /**
+       * 初始化量测工具
+       */
+      function initMeasurementControls() {
+        // 创建量测工具实例
+        potreeMeasurement = new PotreeMeasurement(window.potreeViewer);
+
+        // 初始化量测控件
+        potreeMeasurement.init({
+          continuousMeasurement: document.getElementById(
+            "chk-continuous-measure"
+          ).checked,
+          pointButtonId: "btn-measure-point",
+          distanceButtonId: "btn-measure-distance",
+          areaButtonId: "btn-measure-area",
+          clearButtonId: "btn-measure-clear",
+          stopButtonId: "btn-measure-stop",
+          continuousCheckboxId: "chk-continuous-measure",
+          onMeasureStart: function (type) {},
+          onMeasureComplete: function (measurement) {
+            console.log("测量完成:", measurement);
+          },
+        });
+      }
+    </script>
+  </body>
+</html>
