@@ -21,9 +21,11 @@
       href="./libs/potree/libs/jquery-ui/jquery-ui.min.css"
     />
     <!-- 引入构建后的 Cesium CSS 文件 -->
-    <link href="./libs/cesium/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+    <link
+      href="./libs/cesium/Build/Cesium/Widgets/widgets.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./css/hpgs_las.css" />
-    
   </head>
 
   <body>
@@ -83,7 +85,7 @@
           <button id="btn-measure-area">面积</button>
           <button id="btn-measure-clear">清除</button>
           <button id="btn-measure-stop">停止</button>
-          <div style="display: none;">
+          <div style="display: none">
             <input type="checkbox" id="chk-continuous-measure" />
             <label for="chk-continuous-measure">连续测量</label>
           </div>
@@ -99,18 +101,23 @@
 
       /*********  引擎一 cesium  *********/
 
-      initCesium("cesiumContainer", function (viewer) {
-        window.cesiumViewer = viewer;
+      function initCesiumFunc() {
+        initCesium("cesiumContainer", function (viewer) {
+          window.cesiumViewer = viewer;
 
-        load3Dtiles({
-          viewer: viewer,
-          url: "./data/ljyh-hpgs/tileset.json",
-          callback: function (tileset) {
-            console.log(tileset);
-          },
-          isFlyTo: false,
+          load3Dtiles({
+            viewer: viewer,
+            url: "./data/ljyh-hpgs/tileset.json",
+            callback: function (tileset) {
+              console.log(tileset);
+              // 由于Cesium已被禁用，不再需要加载transform_matrix
+              let tilesetUrl = "./data/ljyh-hpgs";
+              loadTransformMatrix(tilesetUrl);
+            },
+            isFlyTo: true,
+          });
         });
-      });
+      }
 
       /*********  引擎二 potree  *********/
 
@@ -121,14 +128,15 @@
           potreeViewer: potreeViewer,
           lasUrl: "./data/ljyh-las/metadata.json",
           callback: function (pointcloud) {
-            // 由于Cesium已被禁用，不再需要加载transform_matrix
-            let tilesetUrl = "./data/ljyh-hpgs";
-            loadTransformMatrix(tilesetUrl);
+            // scene.view.setView([-3.008, -20.191, 2.5], [6.0, 1.552, 0.242]);
+            // 设置点云透明
+            pointcloud.material.uOpacity = 0;
+            initCesiumFunc();
 
             // 初始化量测工具
             initMeasurementControls();
           },
-          isFlyTo: true,
+          isFlyTo: false,
         });
       });
 

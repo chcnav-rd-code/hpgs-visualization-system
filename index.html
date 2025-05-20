@@ -8,7 +8,10 @@
     />
     <title>Cesium Build Test</title>
     <!-- 引入构建后的 Cesium CSS 文件 -->
-    <link href="./libs/cesium/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+    <link
+      href="./libs/cesium/Build/Cesium/Widgets/widgets.css"
+      rel="stylesheet"
+    />
     <!-- 引入构建后的 Cesium JavaScript 文件 -->
     <script src="./libs/cesium/Build/Cesium/Cesium.js"></script>
     <!-- 引入cesium初始化 -->
@@ -52,8 +55,8 @@
           callback: function (tileset) {
             // 初始化漫游控制器
             var roamingController = new CesiumRoaming(viewer, {
-              moveSpeed: 0.05, // 降低基础移动速度
-              rotateSpeed: Cesium.Math.toRadians(0.5), // 降低旋转速度
+              moveSpeed: 0.07, // 降低基础移动速度
+              rotateSpeed: Cesium.Math.toRadians(0.4), // 降低旋转速度
               acceleration: 0.1, // 降低加速度
               deceleration: 0.3, // 设置减速度
               maxSpeed: 0.5, // 限制最大速度
@@ -72,7 +75,7 @@
         const measurementTool = new CesiumMeasurement(viewer, {
           // 可以自定义样式选项
           pointOptions: {
-            pixelSize: 12,
+            pixelSize: 16,
             color: Cesium.Color.RED,
             outlineColor: Cesium.Color.WHITE,
             outlineWidth: 2,
@@ -215,7 +218,6 @@
           }
         });
       }
-
     </script>
   </body>
 </html>
