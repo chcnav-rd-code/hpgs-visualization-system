@@ -11,6 +11,14 @@
 	2	渲染管线拓展：对原生 3D 模型渲染管线进行拓展，兼容对GaussianSplat 数据深度测试的支持，提升了渲染效果的真实感和准确性，实现基于GS数据的精准量测支持。
 	4	叠加渲染与精准量测：成功实现点云与 3D 模型的叠加渲染，并且基于点云数据实现精准量测，满足了复杂场景下多类型数据融合展示与精确测量的需求，提升了数据的利用价值和分析能力。
 
+
+### 安装
+#### 下载完整工程和资源包
+
+从[资源包仓库](https://cocloud-test.obs.cn-east-2.myhuaweicloud.com/temp/hpgs-visualization-systeam.zip)直接下载完整静态资源包、以及测试数据。
+
+
+
 ## 🌟 功能特点
 
 - **多格式支持**：支持HPGS文件、LAS/LAZ点云数据、3D Tiles等多种格式
@@ -23,12 +31,6 @@
 - **开源可扩展**：基于开源技术栈，高度可定制
 
 ## 🚀 快速开始
-
-### 安装
-
-#### 方式一：下载完整工程和资源包
-
-从[资源包仓库](https://cocloud-test.obs.cn-east-2.myhuaweicloud.com/temp/hpgs-visualization-system.zip)直接下载完整静态资源包、以及测试数据。
 
 
 ### 依赖条件
