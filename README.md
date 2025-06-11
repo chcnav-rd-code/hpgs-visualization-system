@@ -15,7 +15,7 @@
 ### 安装
 #### 下载完整工程和资源包
 
-从[资源包仓库](https://cocloud-test.obs.cn-east-2.myhuaweicloud.com/temp/hpgs-visualization-systeam.zip)直接下载完整静态资源包、以及测试数据。
+从[资源包仓库https://cocloud-test.obs.cn-east-2.myhuaweicloud.com/temp/hpgs-visualization-systeam.zip](https://cocloud-test.obs.cn-east-2.myhuaweicloud.com/temp/hpgs-visualization-systeam.zip)直接下载完整静态资源包、以及测试数据。
 
 
 
