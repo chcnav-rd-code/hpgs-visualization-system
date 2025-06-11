@@ -26,16 +26,10 @@
 
 ### 安装
 
-#### 方式一：克隆仓库
+#### 方式一：下载完整工程和资源包
 
-```bash
-git clone https://github.com/chcnav-rd-code/hpgs-visualization-systeam.git
-cd hpgs-visualization-systeam
-```
+从[资源包仓库](https://cocloud-test.obs.cn-east-2.myhuaweicloud.com/temp/hpgs-visualization-system.zip)直接下载完整静态资源包、以及测试数据。
 
-#### 方式二：直接下载
-
-从[Release页面](https://github.com/chcnav-rd-code/hpgs-visualization-systeam/releases)下载最新版本。
 
 ### 依赖条件
 
@@ -45,7 +39,7 @@ cd hpgs-visualization-systeam
 ### 项目结构
 
 ```
-hpgs-visualization-systeam/
+hpgs-visualization-system/
 ├── js/                        # JavaScript核心功能模块
 │   ├── cesium-init.js         # Cesium初始化
 │   ├── cesium-load-3dtiles.js # 3D Tiles加载
@@ -375,7 +369,7 @@ MIT License
 ## 📞 联系方式
 
 - 项目维护者: [上海华测导航技术股份有限公司](https://www.huace.cn/)
-- 项目主页: [https://github.com/CHCNAV-Official/hpgs-visualization-systeam](https://github.com/chcnav-rd-code/hpgs-visualization-systeam/releases)
+- 项目主页: [https://github.com/CHCNAV-Official/hpgs-visualization-system](https://github.com/chcnav-rd-code/hpgs-visualization-system/releases)
 
 ## 🙏 鸣谢
 
